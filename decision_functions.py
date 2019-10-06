@@ -8,6 +8,16 @@ from matplotlib_venn import venn2, venn3
 def ask_more_values(value):
     """
     Ask the user if they would like to add an additional value
+    
+    Parameters
+    ----------
+    value: str
+        currently either feature or option
+        
+    Return
+    ------
+    resp: str
+        whether or not to continue asking for more values
     """ 
     resp = 'yes'
     counter = 0
@@ -28,6 +38,11 @@ def ask_more_values(value):
 def get_feature_list():
     """
     Ask the user to enter a feature
+    
+    Returns
+    -------
+    feature_list: list
+        list of strings of feature names
     """
     # artificial max number of features
     n = 10
@@ -50,6 +65,16 @@ def get_feature_list():
 def set_feature_importance(feature_list):
     """
     Set the importance of each feature
+    
+    Paramters
+    ---------
+    feature_list: list
+        list of feature names
+        
+    Returns
+    -------
+    feature_dict: dict
+        key value pairs are features and their absolute importance compared to each other
     """
     # Total for feature importances should add up to a round number
     num_features = len(feature_list)
@@ -85,6 +110,11 @@ def set_feature_importance(feature_list):
 def get_option_list():
     """
     Ask the user to enter an option
+    
+    Returns
+    -------
+    option_list: list
+        list of strings which are the options we need to decide between
     """
     # artificial max number of features
     n = 5
@@ -107,6 +137,19 @@ def get_option_list():
 def rate_each_option(feature_list, option_list):
     """
     rate each feature in each option
+    
+    Parameters
+    ----------
+    feature_list: list
+        list of features on which to rate each option
+        
+    option_list: list
+        list of options which are being pitted against each other
+        
+    Returns
+    -------
+    option_dict: dict
+        key value pairs are option and a dictionary with a rating (out of 10) for each feature
     """
     option_dict = {}
     for option in option_list:
@@ -119,6 +162,17 @@ def rate_each_option(feature_list, option_list):
 
 
 def print_scores(option_value_df, option_list):
+    """
+    Calculates and prints the final scores
+    
+    Paramters
+    ---------
+    option_value_df: DataFrame
+        Rows are features. Columns are options, absolute importances, and percent importances
+        
+    option_list: list
+        list of options. easier to hand in the options list then go back and determine options from column names.
+    """
     for option in option_list:
         total = option_value_df[option]*option_value_df['percent']
         print(f'{option}: ', total.sum()/10)
@@ -128,6 +182,15 @@ def print_scores(option_value_df, option_list):
 def dual_radar_plot(df, comparison_pair):
     """
     Make a radar plot comparing feature values of two options
+    
+    Parameters
+    ----------
+    df: DataFrame
+        df contains all option ratins for each feature
+    
+    comparison_pair: list
+        two strings. Identify which options to compare. 
+        Only use two because more comparisons on a radar plot looks messy.
     """
     # ------- PART 1: Create background
     feature_list = df.index.values
@@ -205,6 +268,14 @@ def get_options_for_radar(option_list):
 def create_venn2(df, comparison_pair):
     """
     Create a 2 circle Venn Diagram
+    
+    Parameters
+    ----------
+    df: DataFrame
+        df contains all option ratins for each feature
+    
+    comparison_pair: list
+        two strings. Identify which options to compare. 
     """
     
     list_of_dicts = df[comparison_pair].T.to_dict('records')
@@ -240,6 +311,14 @@ def create_venn2(df, comparison_pair):
 def create_venn3(df, comparison_triple):
     """
     Create a 3 circle venn diagram
+    
+    Parameters
+    ----------
+    df: DataFrame
+        df contains all option ratins for each feature
+    
+    comparison_pair: list
+        three strings. Identify which options to compare.
     """
     list_of_dicts = df[comparison_triple].T.to_dict('records')
     list_of_strings = []
