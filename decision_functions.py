@@ -1,9 +1,10 @@
 import pandas as pd
-import numpy as np
-from math import pi
 import matplotlib.pyplot as plt
-get_ipython().run_line_magic('matplotlib', 'inline')
+%matplotlib inline
+import numpy as np
 import time
+from math import pi
+from matplotlib_venn import venn2, venn3
 
 def ask_more_values(value):
     """
@@ -200,3 +201,93 @@ def get_options_for_radar(option_list):
     if comparison_list[1] == 'none':
         return comparison_list[0]
     return comparison_list
+
+
+def create_venn2(df, comparison_pair):
+    """
+    Create a 2 circle Venn Diagram
+    """
+    
+    list_of_dicts = df[comparison_pair].T.to_dict('records')
+    list_of_strings = []
+    for key, value in list_of_dicts[0].items():
+        list_of_strings.append(str(key)+':'+str(value))
+    set_A = set(list_of_strings)
+    
+    list_of_strings = []
+    for key, value in list_of_dicts[1].items():
+        list_of_strings.append(str(key)+':'+str(value))
+    set_B = set(list_of_strings)
+    
+    list_of_sets = [set_A, set_B]
+
+    v = venn2(list_of_sets, set_labels=comparison_pair)
+    
+    alpha_strings = list(set_B.difference(set_A))
+    v.get_label_by_id('01').set_text('\n'.join(alpha_strings))
+    
+    beta_strings = list(set_A.difference(set_B))
+    v.get_label_by_id('10').set_text('\n'.join(beta_strings))
+    
+    intersection_strings = list(set_B.intersection(set_A))
+    v.get_label_by_id('11').set_text('\n'.join(intersection_strings))
+    
+    plt.title('Venn Diagram')
+    plt.show()
+    
+    return
+
+
+def create_venn3(df, comparison_triple):
+    """
+    Create a 3 circle venn diagram
+    """
+    list_of_dicts = df[comparison_triple].T.to_dict('records')
+    list_of_strings = []
+    for key, value in list_of_dicts[0].items():
+        list_of_strings.append(str(key)+':'+str(value))
+    set_A = set(list_of_strings)
+    
+    list_of_strings = []
+    for key, value in list_of_dicts[1].items():
+        list_of_strings.append(str(key)+':'+str(value))
+    set_B = set(list_of_strings)
+    
+    list_of_strings = []
+    for key, value in list_of_dicts[2].items():
+        list_of_strings.append(str(key)+':'+str(value))
+    set_C = set(list_of_strings)
+    
+    list_of_sets = [set_A, set_B, set_C]
+    
+    plt.figure(figsize=(10,10))
+    
+    v=venn3(subsets = (10, 8, 22, 6,9,4,2), set_labels = comparison_triple)
+    
+    strings_001 = list(set_C.difference(set_A).difference(set_B))
+    v.get_label_by_id('001').set_text('\n'.join(strings_001))
+    
+    strings_010 = list(set_B.difference(set_A).difference(set_C))
+    v.get_label_by_id('010').set_text('\n'.join(strings_010))
+    
+    strings_100 = list(set_A.difference(set_B).difference(set_C))
+    v.get_label_by_id('100').set_text('\n'.join(strings_100))
+    
+    strings_011 = list(set_B.intersection(set_C).difference(set_A))
+    v.get_label_by_id('011').set_text('\n'.join(strings_011))
+    
+    strings_101 = list(set_A.intersection(set_C).difference(set_B))
+    v.get_label_by_id('101').set_text('\n'.join(strings_101))
+    
+    strings_110 = list(set_A.intersection(set_B).difference(set_C))
+    v.get_label_by_id('110').set_text('\n'.join(strings_110))
+    
+    strings_111 = list(set_A.intersection(set_B).intersection(set_C))
+    v.get_label_by_id('111').set_text('\n'.join(strings_111))
+    
+    
+    plt.title('Venn Diagram')
+    
+    plt.show()
+    
+    return
