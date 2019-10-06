@@ -290,6 +290,8 @@ def create_venn2(df, comparison_pair):
     set_B = set(list_of_strings)
     
     list_of_sets = [set_A, set_B]
+    
+    plt.figure(figsize=(10,10))
 
     v = venn2(list_of_sets, set_labels=comparison_pair)
     
@@ -340,7 +342,14 @@ def create_venn3(df, comparison_triple):
     
     plt.figure(figsize=(10,10))
     
-    v=venn3(subsets = (10, 8, 22, 6,9,4,2), set_labels = comparison_triple)
+    v=venn3(subsets = (len(strings_001),
+                       len(strings_010),
+                       len(strings_011),
+                       len(strings_100),
+                       len(strings_101),
+                       len(strings_110),
+                       len(strings_111),
+                       set_labels = comparison_triple)
     
     strings_001 = list(set_C.difference(set_A).difference(set_B))
     v.get_label_by_id('001').set_text('\n'.join(strings_001))
