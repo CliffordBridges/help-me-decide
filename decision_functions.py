@@ -351,8 +351,8 @@ def create_venn3(df, comparison_triple):
                        len(strings_100),
                        len(strings_101),
                        len(strings_110),
-                       len(strings_111),
-                       set_labels = comparison_triple))
+                       len(strings_111)),
+                       set_labels = comparison_triple)
     
     strings_001 = list(set_C.difference(set_A).difference(set_B))
     v.get_label_by_id('001').set_text('\n'.join(strings_001))
