@@ -302,7 +302,10 @@ def create_venn2(df, comparison_pair):
     v.get_label_by_id('10').set_text('\n'.join(beta_strings))
     
     intersection_strings = list(set_B.intersection(set_A))
-    v.get_label_by_id('11').set_text('\n'.join(intersection_strings))
+    try:
+        v.get_label_by_id('11').set_text('\n'.join(intersection_strings))
+    except:
+        v.get_label_by_id('11').set_text('no overlap')
     
     plt.title('Venn Diagram')
     plt.show()
@@ -349,7 +352,7 @@ def create_venn3(df, comparison_triple):
                        len(strings_101),
                        len(strings_110),
                        len(strings_111),
-                       set_labels = comparison_triple)
+                       set_labels = comparison_triple))
     
     strings_001 = list(set_C.difference(set_A).difference(set_B))
     v.get_label_by_id('001').set_text('\n'.join(strings_001))
@@ -361,16 +364,28 @@ def create_venn3(df, comparison_triple):
     v.get_label_by_id('100').set_text('\n'.join(strings_100))
     
     strings_011 = list(set_B.intersection(set_C).difference(set_A))
-    v.get_label_by_id('011').set_text('\n'.join(strings_011))
+    try:
+        v.get_label_by_id('011').set_text('\n'.join(strings_011))
+    except:
+        v.get_label_by_id('011').set_text('no overlap')
     
     strings_101 = list(set_A.intersection(set_C).difference(set_B))
-    v.get_label_by_id('101').set_text('\n'.join(strings_101))
+    try:
+        v.get_label_by_id('101').set_text('\n'.join(strings_101))
+    except:
+        v.get_label_by_id('101').set_text('no overlap')
     
     strings_110 = list(set_A.intersection(set_B).difference(set_C))
-    v.get_label_by_id('110').set_text('\n'.join(strings_110))
-    
+    try:
+        v.get_label_by_id('110').set_text('\n'.join(strings_110))
+    except:
+        v.get_label_by_id('110').set_text('no overlap')
+        
     strings_111 = list(set_A.intersection(set_B).intersection(set_C))
-    v.get_label_by_id('111').set_text('\n'.join(strings_111))
+    try:
+        v.get_label_by_id('111').set_text('\n'.join(strings_111))
+    except:
+        v.get_label_by_id('111').set_text('no overlap')
     
     
     plt.title('Venn Diagram')
