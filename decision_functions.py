@@ -78,8 +78,10 @@ def set_feature_importance(feature_list):
     """
     # Total for feature importances should add up to a round number
     num_features = len(feature_list)
+    feature_dict = {}
     if num_features==1:
-        df.iloc[0,'importance']=1
+        feature_dict[feature] = {'value': 1, 'percent': 1}
+#         df.iloc[0,'importance']=1
         return df
     elif num_features<10:
         total_importance = 10
@@ -89,7 +91,6 @@ def set_feature_importance(feature_list):
     print(f'Imagine you have {total_importance} points to assign to your {num_features} features.\n')
     print(f'Assign a nonnegative whole number to each of the following features making sure the total sums to {total_importance}.')
     np.random.shuffle(feature_list)
-    feature_dict = {}
     points_used = 0
     for index, feature in enumerate(feature_list):
         print(f'You have {total_importance - points_used} points left,')
