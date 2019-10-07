@@ -80,7 +80,7 @@ def set_feature_importance(feature_list):
     num_features = len(feature_list)
     feature_dict = {}
     if num_features==1:
-        feature_dict[feature] = {'value': 1, 'percent': 1}
+        feature_dict[feature_list[0]] = {'value': 1, 'percent': 1}
 #         df.iloc[0,'importance']=1
         return df
     elif num_features<10:
