@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import time
-from math import pi
+from math import pi, ceil
 from matplotlib_venn import venn2, venn3
 
 def ask_more_values(value):
@@ -62,6 +62,18 @@ def get_feature_list():
     return feature_list
 
 
+def round10(x):
+    """
+    Round integer up to nearest 10
+    
+    Paramters
+    ---------
+    x: int
+    """
+    rounded = ceil(x/10)*10
+    return rounded
+
+
 def set_feature_importance(feature_list):
     """
     Set the importance of each feature
@@ -76,17 +88,16 @@ def set_feature_importance(feature_list):
     feature_dict: dict
         key value pairs are features and their absolute importance compared to each other
     """
+    avg_rating = 3
+    
     # Total for feature importances should add up to a round number
     num_features = len(feature_list)
     feature_dict = {}
     if num_features==1:
         feature_dict[feature_list[0]] = {'value': 1, 'percent': 1}
-#         df.iloc[0,'importance']=1
         return feature_dict
-    elif num_features<10:
-        total_importance = 10
     else:
-        total_importance = 100
+        total_importance = round10(avg_rating*num_features)
         
     print(f'Imagine you have {total_importance} points to assign to your {num_features} features.\n')
     print(f'Assign a nonnegative whole number to each of the following features making sure the total sums to {total_importance}.')
@@ -95,7 +106,7 @@ def set_feature_importance(feature_list):
     for index, feature in enumerate(feature_list):
         print(f'You have {total_importance - points_used} points left,')
         print(f'and {num_features - index} more features to value.\n')
-        time.sleep(1)
+        time.sleep(0.5)
         try:
             feature_dict[feature] = input(f'How much do you value {feature}?\t')
             feature_dict[feature] = {'value': int(feature_dict[feature]), 'percent': int(feature_dict[feature])/total_importance}
