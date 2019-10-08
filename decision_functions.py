@@ -106,7 +106,7 @@ def set_feature_importance(feature_list):
     for index, feature in enumerate(feature_list):
         print(f'You have {total_importance - points_used} points left,')
         print(f'and {num_features - index} more features to value.\n')
-        time.sleep(0.5)
+        time.sleep(0.2)
         try:
             feature_dict[feature] = input(f'How much do you value {feature}?\t')
             feature_dict[feature] = {'value': int(feature_dict[feature]), 'percent': int(feature_dict[feature])/total_importance}
