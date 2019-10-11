@@ -187,7 +187,7 @@ def print_scores(option_value_df, option_list):
     """
     for option in option_list:
         total = option_value_df[option]*option_value_df['percent']
-        print(f'{option}: ', total.sum()/10)
+        print(f'{option} meets {round(total.sum()*10)}% of your desired features.')
     return
 
 
