@@ -2,7 +2,7 @@ import os
 import sys
 src_dir = os.path.join(os.getcwd(), '..', '03-src')
 sys.path.append(src_dir)
-import decisions_functions as hmd
+import decisionclass.decision_functions as hmd
 
 
 
