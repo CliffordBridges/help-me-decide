@@ -2,9 +2,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+from itertools import combinations
 from math import pi, ceil
 from matplotlib_venn import venn2, venn3
 
+#---------------------------------------------------------------------
 def ask_more_values(value):
     """
     Ask the user if they would like to add an additional value
@@ -35,6 +37,7 @@ def ask_more_values(value):
     
     return resp
 
+#---------------------------------------------------------------------
 def get_feature_list():
     """
     Ask the user to enter a feature
@@ -62,6 +65,7 @@ def get_feature_list():
     return feature_list
 
 
+#---------------------------------------------------------------------
 def round10(x):
     """
     Round integer up to nearest 10
@@ -74,6 +78,7 @@ def round10(x):
     return rounded
 
 
+#---------------------------------------------------------------------
 def set_feature_importance(feature_list):
     """
     Set the importance of each feature
@@ -119,6 +124,7 @@ def set_feature_importance(feature_list):
             
     return feature_dict
 
+#---------------------------------------------------------------------
 def get_option_list():
     """
     Ask the user to enter an option
@@ -146,6 +152,7 @@ def get_option_list():
     return option_list
 
 
+#---------------------------------------------------------------------
 def rate_each_option(feature_list, option_list):
     """
     rate each feature in each option
@@ -173,6 +180,7 @@ def rate_each_option(feature_list, option_list):
     return option_dict
 
 
+#---------------------------------------------------------------------
 def print_scores(option_value_df, option_list):
     """
     Calculates and prints the final scores
@@ -191,6 +199,7 @@ def print_scores(option_value_df, option_list):
     return
 
 
+#---------------------------------------------------------------------
 def dual_radar_plot(df, comparison_pair):
     """
     Make a radar plot comparing feature values of two options
@@ -245,6 +254,7 @@ def dual_radar_plot(df, comparison_pair):
     plt.show()
     return
 
+#---------------------------------------------------------------------
 def get_options_for_radar(option_list):
     """
     Gets 1 or 2 options for the radar plot
@@ -277,6 +287,7 @@ def get_options_for_radar(option_list):
     return comparison_list
 
 
+#---------------------------------------------------------------------
 def create_venn2(df, comparison_pair):
     """
     Create a 2 circle Venn Diagram
@@ -325,6 +336,7 @@ def create_venn2(df, comparison_pair):
     return
 
 
+#---------------------------------------------------------------------
 def create_venn3(df, comparison_triple):
     """
     Create a 3 circle venn diagram
@@ -407,3 +419,147 @@ def create_venn3(df, comparison_triple):
     plt.show()
     
     return
+
+
+#---------------------------------------------------------------------
+#---------------------------------------------------------------------
+class Decision():
+    """
+    A class to easily store previous decisions
+    """
+    def __init__(self):
+        self.feature_list = ['feature1', 'feature3', 'feature4', 'feature2']
+        self.feature_dict = {'feature1': {'value': 1, 'percent': 0.1},
+ 'feature3': {'value': 3, 'percent': 0.3},
+ 'feature4': {'value': 4, 'percent': 0.4},
+ 'feature2': {'value': 2, 'percent': 0.2}}
+        self.option_list = ['option1', 'option2', 'option3', 'option4']
+        self.option_dict = {'option1': {'feature1': 0, 'feature3': 6, 'feature4': 9, 'feature2': 3},
+ 'option2': {'feature1': 3, 'feature3': 9, 'feature4': 0, 'feature2': 6},
+ 'option3': {'feature1': 6, 'feature3': 0, 'feature4': 3, 'feature2': 9},
+ 'option4': {'feature1': 9, 'feature3': 3, 'feature4': 6, 'feature2': 0}}
+        self.update_option_value_df()
+        return
+        
+    def build_decision(self):
+        self.feature_list = get_feature_list()
+        self.feature_dict = set_feature_importance(self.feature_list)
+        self.option_list = get_option_list()
+        self.option_dict = rate_each_option(self.feature_list, self.option_list)
+        self.update_option_value_df()
+        return
+        
+    def update_option_value_df(self):
+        self.option_value_df = pd.DataFrame.from_dict(self.option_dict).merge(
+            pd.DataFrame(self.feature_dict).T, left_index=True, right_index=True)
+        return 
+        
+    def update_option_dict(self, feature=None, option=None):
+        """
+        If the option is not in the keys, option will be added and function will request user input to rate.
+        if option is in the keys, option key value pair will be removed.
+        
+        Parameters
+        ----------
+        feature: str
+            The feature key that will be added or removed. 
+            If added, will rate all options on this new feature
+        
+        option: str
+            The key that will be added or removed. 
+            If added, will rate all features in this new option
+        """
+        if feature != None:
+            try:
+                for k in self.option_dict.keys:
+                    self.option_dict[k].pop(feature)
+            except:
+                for k, v in rate_each_option([feature], self.option_list).items():
+                    self.option_dict[k].update(v)
+        
+        elif option != None:
+            try:
+                self.option_dict.pop(option)            
+            except:
+                self.option_dict.update(rate_each_option(self.feature_list, [option]))
+        
+        print('New option dict:\n', self.option_dict)
+        self.update_option_value_df()
+        return
+    
+    def update_option_list(self, option):
+        """
+        If option is not in the list, option will be added to list
+        If option is in list, option will be removed.
+        
+        Parameters
+        ----------
+        option: str
+            the feature that will be added or removed
+        """
+        try:
+            self.option_list.remove(option)
+        except:
+            self.option_list.append(option)
+                                    
+        print('New option list:\n', self.option_list)
+        
+        self.update_option_dict(None, option)
+        return
+    
+    def update_feature_dict(self, feature):
+        """
+        If the feature is not in the keys, feature will be added and function will request user input to rate.
+        If feature is in the keys, feature key value pair will be removed.
+        
+        Parameters
+        ----------
+        feature: str
+            the key that will be added or removed
+        """
+        try:
+            self.feature_dict.pop(feature)
+            self.feature_dict.update(set_feature_importance(self.feature_list))
+            self.update_option_dict(None, None)
+        except:
+            self.feature_dict.update(set_feature_importance(self.feature_list))
+            self.update_option_dict(feature, None)
+        
+        print('New feature dict:\n', self.feature_dict)
+        
+        return
+    
+    def update_feature_list(self, feature):
+        """
+        If feature is not in the list, feature will be added to list
+        If feature is in list, feature will be removed.
+        
+        Parameters
+        ----------
+        feature: str
+            the feature that will be added or removed
+        """
+        try:
+            self.feature_list.remove(feature)
+        except:
+            self.feature_list.append(feature)
+                                    
+        print('New feature list:\n', self.feature_list)
+        
+        self.update_feature_dict(feature)
+        return
+    
+    def print_results(self):
+        print_scores(self.option_value_df, self.option_list)
+        
+    def plot_radar(self):
+        for pair in list(combinations(self.option_list, 2)):
+            dual_radar_plot(self.option_value_df, pair)
+        
+    def plot_venn2(self):
+        for pair in list(combinations(self.option_list, 2)):
+            create_venn2(self.option_value_df, list(pair))
+        
+    def plot_venn3(self):
+        for triple in list(combinations(self.option_list, 3)):
+            create_venn3(self.option_value_df, list(triple))
