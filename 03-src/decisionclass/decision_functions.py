@@ -440,6 +440,11 @@ class Decision():
      'option3': {'feature1': 6, 'feature3': 0, 'feature4': 3, 'feature2': 9},
      'option4': {'feature1': 9, 'feature3': 3, 'feature4': 6, 'feature2': 0}}
             self.update_option_value_df()
+        else:
+            self.feature_list = []
+            self.feature_dict = {}
+            self.option_list = []
+            self.option_dict = {}
         return
         
     def build_decision(self):
