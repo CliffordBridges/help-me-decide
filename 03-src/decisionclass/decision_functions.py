@@ -517,13 +517,16 @@ class Decision():
         feature: str
             the key that will be added or removed
         """
-        try:
-            self.feature_dict.pop(feature)
+        if feature == 'null':
             self.feature_dict.update(set_feature_importance(self.feature_list))
-            self.update_option_dict(None, None)
-        except:
-            self.feature_dict.update(set_feature_importance(self.feature_list))
-            self.update_option_dict(feature, None)
+        else:
+            try:
+                self.feature_dict.pop(feature)
+                self.feature_dict.update(set_feature_importance(self.feature_list))
+                self.update_option_dict(None, None)
+            except:
+                self.feature_dict.update(set_feature_importance(self.feature_list))
+                self.update_option_dict(feature, None)
         
         print('New feature dict:\n', self.feature_dict)
         
