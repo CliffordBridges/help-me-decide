@@ -427,18 +427,19 @@ class Decision():
     """
     A class to easily store previous decisions
     """
-    def __init__(self):
-        self.feature_list = ['feature1', 'feature3', 'feature4', 'feature2']
-        self.feature_dict = {'feature1': {'value': 1, 'percent': 0.1},
- 'feature3': {'value': 3, 'percent': 0.3},
- 'feature4': {'value': 4, 'percent': 0.4},
- 'feature2': {'value': 2, 'percent': 0.2}}
-        self.option_list = ['option1', 'option2', 'option3', 'option4']
-        self.option_dict = {'option1': {'feature1': 0, 'feature3': 6, 'feature4': 9, 'feature2': 3},
- 'option2': {'feature1': 3, 'feature3': 9, 'feature4': 0, 'feature2': 6},
- 'option3': {'feature1': 6, 'feature3': 0, 'feature4': 3, 'feature2': 9},
- 'option4': {'feature1': 9, 'feature3': 3, 'feature4': 6, 'feature2': 0}}
-        self.update_option_value_df()
+    def __init__(self, example=False):
+        if example:
+            self.feature_list = ['feature1', 'feature3', 'feature4', 'feature2']
+            self.feature_dict = {'feature1': {'value': 1, 'percent': 0.1},
+     'feature3': {'value': 3, 'percent': 0.3},
+     'feature4': {'value': 4, 'percent': 0.4},
+     'feature2': {'value': 2, 'percent': 0.2}}
+            self.option_list = ['option1', 'option2', 'option3', 'option4']
+            self.option_dict = {'option1': {'feature1': 0, 'feature3': 6, 'feature4': 9, 'feature2': 3},
+     'option2': {'feature1': 3, 'feature3': 9, 'feature4': 0, 'feature2': 6},
+     'option3': {'feature1': 6, 'feature3': 0, 'feature4': 3, 'feature2': 9},
+     'option4': {'feature1': 9, 'feature3': 3, 'feature4': 6, 'feature2': 0}}
+            self.update_option_value_df()
         return
         
     def build_decision(self):
