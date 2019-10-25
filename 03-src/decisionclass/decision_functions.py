@@ -295,22 +295,26 @@ def create_venn2(df, comparison_pair):
     Parameters
     ----------
     df: DataFrame
-        df contains all option ratins for each feature
+        df contains all option ratings for each feature
     
     comparison_pair: list
-        two strings. Identify which options to compare. 
+        Two strings. Determines which options to compare. 
     """
     
     list_of_dicts = df[comparison_pair].T.to_dict('records')
+    
     list_of_strings = []
     for key, value in list_of_dicts[0].items():
         list_of_strings.append(str(key)+':'+str(value))
     set_A = set(list_of_strings)
     
-    list_of_strings = []
-    for key, value in list_of_dicts[1].items():
-        list_of_strings.append(str(key)+':'+str(value))
-    set_B = set(list_of_strings)
+    try:
+        list_of_strings = []
+        for key, value in list_of_dicts[1].items():
+            list_of_strings.append(str(key)+':'+str(value))
+        set_B = set(list_of_strings)
+    except:
+        set_B=set_A
     
     list_of_sets = [set_A, set_B]
     
@@ -347,23 +351,30 @@ def create_venn3(df, comparison_triple):
         df contains all option ratins for each feature
     
     comparison_pair: list
-        three strings. Identify which options to compare.
+        Three strings. Determines which options to compare.
     """
     list_of_dicts = df[comparison_triple].T.to_dict('records')
+    
     list_of_strings = []
     for key, value in list_of_dicts[0].items():
         list_of_strings.append(str(key)+':'+str(value))
     set_A = set(list_of_strings)
     
-    list_of_strings = []
-    for key, value in list_of_dicts[1].items():
-        list_of_strings.append(str(key)+':'+str(value))
-    set_B = set(list_of_strings)
+    try:
+        list_of_strings = []
+        for key, value in list_of_dicts[1].items():
+            list_of_strings.append(str(key)+':'+str(value))
+        set_B = set(list_of_strings)
+    except:
+        set_B = set_A
     
-    list_of_strings = []
-    for key, value in list_of_dicts[2].items():
-        list_of_strings.append(str(key)+':'+str(value))
-    set_C = set(list_of_strings)
+    try:
+        list_of_strings = []
+        for key, value in list_of_dicts[2].items():
+            list_of_strings.append(str(key)+':'+str(value))
+        set_C = set(list_of_strings)
+    except:
+        set_C = set_A
     
     list_of_sets = [set_A, set_B, set_C]
     # Careful! set_A is associated with 100, set_B is associated with 010, set_C is associated with 001
@@ -558,17 +569,74 @@ class Decision():
         self.update_feature_dict(feature)
         return
     
-    def print_results(self):
-        print_scores(self.option_value_df, self.option_list)
+    def print_results(self, option_list=None):
+        """
+        Prints the percentage match for options in the provided option list. 
+        Default prints the percentage match for every option.
         
-    def plot_radar(self):
-        for pair in list(combinations(self.option_list, 2)):
-            dual_radar_plot(self.option_value_df, pair)
+        Parameters
+        ----------
+        option_list: list
+            List containing the options whose results will be printed. 
+            If no option list is provided, all results will be printed.
+        """
+        if option_list==None:
+            option_list=self.option_list
         
-    def plot_venn2(self):
-        for pair in list(combinations(self.option_list, 2)):
+        print_scores(self.option_value_df, option_list)
+        
+    def plot_radar2(self, option_list=None):
+        """
+        Prints the overlapping radar plots for each pair in the provided option list. 
+        Default prints the radar plot for every pair of options. 
+        If the provided option list only contains one option, prints this option's radar plot.
+        
+        Parameters
+        ----------
+        option_list: list
+            List containing the options whose radar plots will be printed. 
+            If no option list is provided, all pairs of radar plots will be printed.
+        """
+        if option_list==None:
+            option_list=self.option_list
+        
+        if len(option_list)==1:
+            dual_radar_plot(self.option_value_df, option_list)
+        else:
+            for pair in list(combinations(option_list, 2)):
+                dual_radar_plot(self.option_value_df, pair)
+        
+    def plot_venn2(self, option_list=None):
+        """
+        Prints the venn diagram for each pair in the provided option list. 
+        Default prints the venn diagram for every pair of options.
+        
+        Parameters
+        ----------
+        option_list: list
+            List containing the options whose pairs venn diagrams will be printed. 
+            If no option list is provided, all pairs of venn diagrams will be printed.
+        """
+        if option_list==None:
+            option_list=self.option_list
+        
+        for pair in list(combinations(option_list, 2)):
             create_venn2(self.option_value_df, list(pair))
         
-    def plot_venn3(self):
-        for triple in list(combinations(self.option_list, 3)):
+    def plot_venn3(self, option_list=None):
+        """
+        Prints the venn diagram for each triple in the provided option list. 
+        Default prints the venn diagram for every triple of options.
+        
+        Parameters
+        ----------
+        option_list: list
+            List containing the options whose triples venn diagrams will be printed. 
+            If no option list is provided, all triples of venn diagrams will be printed.
+        """
+        if option_list==None:
+            option_list=self.option_list
+        
+        for triple in list(combinations(option_list, 3)):
             create_venn3(self.option_value_df, list(triple))
+    
