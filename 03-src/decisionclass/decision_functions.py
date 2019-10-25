@@ -193,9 +193,12 @@ def print_scores(option_value_df, option_list):
     option_list: list
         list of options. easier to hand in the options list then go back and determine options from column names.
     """
+    temp_dict = {}
     for option in option_list:
         total = option_value_df[option]*option_value_df['percent']
-        print(f'{option} meets {round(total.sum()*10)}% of your desired features.')
+        temp_dict[option] = round(total.sum()*10)
+    for option, value in sorted(temp_dict, key=value, reverse=True).items:# sort dictionary by value
+        print(f'{option} meets {value}% of your desired features.')
     return
 
 
@@ -586,7 +589,8 @@ class Decision():
             print('Please only use features provided in feature_list attribute.')
             return
         self.feature_list = list_of_features
-        self.feature_dict.update(set_feature_importance(self.feature_list))
+        self.feature_dict = set_feature_importance(self.feature_list)
+        self.update_option_value_df()
         
         return
     
