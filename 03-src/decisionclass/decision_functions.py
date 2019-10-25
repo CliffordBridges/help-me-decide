@@ -254,6 +254,7 @@ def dual_radar_plot(df, comparison_pair):
     plt.show()
     return
 
+
 #---------------------------------------------------------------------
 def get_options_for_radar(option_list):
     """
@@ -567,6 +568,26 @@ class Decision():
         print('New feature list:\n', self.feature_list)
         
         self.update_feature_dict(feature)
+        return
+    
+    def feature_list_keep(self, list_of_features):
+        """
+        Reduces self.feature_list to the provided list of features.
+        
+        Parameters
+        ----------
+        list_of_features: list
+            List of strings of feature names from self.feature_list.
+            These features will remain, all other features will be removed
+        """
+        try:
+            assert set(list_of_features).issubset(set(self.feature_list))
+        except:
+            print('Please only use features provided in feature_list attribute.')
+            return
+        self.feature_list = list_of_features
+        self.feature_dict.update(set_feature_importance(self.feature_list))
+        
         return
     
     def print_results(self, option_list=None):
