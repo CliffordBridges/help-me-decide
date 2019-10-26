@@ -197,8 +197,8 @@ def print_scores(option_value_df, option_list):
     for option in option_list:
         total = option_value_df[option]*option_value_df['percent']
         temp_dict[option] = round(total.sum()*10)
-    for option, value in sorted(temp_dict, key=value, reverse=True).items:# sort dictionary by value
-        print(f'{option} meets {value}% of your desired features.')
+    for option_value in sorted(temp_dict.items(), key=lambda x: x[1], reverse=True):
+        print(f'{option_value[0]} meets {option_value[1]}% of your desired features.')
     return
 
 
@@ -437,6 +437,7 @@ def create_venn3(df, comparison_triple):
 
 
 #---------------------------------------------------------------------
+# DECISION CLASS
 #---------------------------------------------------------------------
 class Decision():
     """
@@ -470,6 +471,11 @@ class Decision():
         self.update_option_value_df()
         return
         
+
+
+#---------------------------------------------------------------------
+# UPDATING FEATURES AND OPTIONS
+#---------------------------------------------------------------------
     def update_option_value_df(self):
         self.option_value_df = pd.DataFrame.from_dict(self.option_dict).merge(
             pd.DataFrame(self.feature_dict).T, left_index=True, right_index=True)
@@ -593,7 +599,11 @@ class Decision():
         self.update_option_value_df()
         
         return
-    
+
+
+#---------------------------------------------------------------------
+# DISPLAYING RESULTS
+#---------------------------------------------------------------------
     def print_results(self, option_list=None):
         """
         Prints the percentage match for options in the provided option list. 
